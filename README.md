@@ -1,0 +1,2 @@
+# alvingogo
+ commonly used fuctions
