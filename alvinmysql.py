@@ -1,6 +1,6 @@
 import pymysql
 
-def getQuerryResult(sql, database, ipAddress = 'localhost', username = 'root', password = 'luying', ):
+def getQuerryResult(sql, database, password, ipAddress = 'localhost', username = 'root' ):
     # open database connection
     db = pymysql.connect(ipAddress,username,password,database)
     
@@ -23,7 +23,7 @@ def getQuerryResult(sql, database, ipAddress = 'localhost', username = 'root', p
         return 
 
 
-def updateMysql(sql, database, ipAddress = 'localhost', username = 'root', password = 'luying'):
+def updateMysql(sql, database, password, ipAddress = 'localhost', username = 'root'):
     # open database connection
     db = pymysql.connect(ipAddress,username,password,database)
     
