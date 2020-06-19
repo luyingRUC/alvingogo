@@ -17,3 +17,24 @@ def calcu_sub_str_num(mom_str, sun_str):
         if mom_str[i:i+len(sun_str)] == sun_str:
             count += 1
     return count
+
+
+
+def getText(inputstring):
+    # This function transfer a inputstring to "" if it is "None"
+    # Because select results from mysql, there are always results like "None" when the target column is empty
+
+    if (inputstring == "None"): 
+        return ""
+    else:
+        return inputstring
+
+
+def getLem(_word, _type):
+    # to get the original format of a word, say: drugs --> drug
+        # should specialize word tags, like "noun", "verb"
+    lemmatizer = ns.WordNetLemmatizer()
+    _word = _word.strip().lower()
+    result = lemmatizer.lemmatize(_word,_type)
+    
+    return result
