@@ -1,4 +1,5 @@
 import datetime
+import calendar
 
 def getDateByN(startdate, interval):
     # startdate: "YYYY-MM-DD" string formated timestamp
@@ -113,7 +114,14 @@ def geneDayWeeksBefore(inputTimeString, n_week):
         else: 
             result = result - datetime.timedelta(days= diff_days)
 
-
-
     return result
 
+def geneLastDaysMonthly(year):
+    # This function returns a list of dateformated strings which indicate the last day of each month for the specific year
+    result = []
+    for i in range(1, 13):
+        last_day_of_month = calendar.monthrange(year,i)[1]
+        timestamp = datetime.datetime(year, i, last_day_of_month).strftime("%Y-%m-%d")
+        result.append(timestamp)
+
+    return result
