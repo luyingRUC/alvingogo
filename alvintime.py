@@ -125,3 +125,34 @@ def geneLastDaysMonthly(year):
         result.append(timestamp)
 
     return result
+
+def geneLastDaysWeekly(year):
+    # This function returns a list of dateformated strings which indicate the last day of each week for the specific year
+    result = []
+    # first day of one year
+    _date = datetime.datetime(year, 1, 7)
+    while(1):
+        if(_date.year != year):
+            break
+        else: 
+            timestamp = _date.strftime("%Y-%m-%d")
+            result.append(timestamp)
+            _date = _date + datetime.timedelta(days=7)
+
+    return(result)
+
+
+def geneDays(year):
+    # This function returns a list of dateformated strings which indicate each day for the specific year
+    result = []
+    # first day of one year
+    _date = datetime.datetime(year, 1, 7)
+    while(1):
+        if(_date.year != year):
+            break
+        else: 
+            timestamp = _date.strftime("%Y-%m-%d")
+            result.append(timestamp)
+            _date = _date + datetime.timedelta(days=1)
+
+    return(result)

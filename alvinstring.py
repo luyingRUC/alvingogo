@@ -1,8 +1,7 @@
+from pattern.text.en import singularize
 
 
-
-
-# 定义统计字符串的方法
+#  定义统计字符串的方法
 def calcu_sub_str_num(mom_str, sun_str):
     # calculate how many times a substring appears in a mother string
 
@@ -24,7 +23,7 @@ def getText(inputstring):
     # This function transfer a inputstring to "" if it is "None"
     # Because select results from mysql, there are always results like "None" when the target column is empty
 
-    if (inputstring == "None"): 
+    if (inputstring == None): 
         return ""
     else:
         return inputstring
@@ -37,4 +36,18 @@ def getLem(_word, _type):
     _word = _word.strip().lower()
     result = lemmatizer.lemmatize(_word,_type)
     
+    return result
+
+
+def get_lcase_singular(inputstring):
+
+    result = singularize(inputstring.strip().lower())
+
+    return result
+
+
+def get_lcase(inputstring):
+
+    result = inputstring.strip().lower()
+
     return result
