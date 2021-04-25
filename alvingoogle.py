@@ -34,6 +34,8 @@ def getGoogleKeywords(kwlist):
     # Individual_EXACT_KEYWORD = [list(x) for x in Individual_EXACT_KEYWORD]
 
     # print(EXACT_KEYWORDS)
+
+    print("the drugname-searchedKyword dictionary is: ")
     print(result)
 
     return EXACT_KEYWORDS, result
@@ -112,15 +114,16 @@ def getGoogleTrends_multiple_daily_vertical(wordList, startDate, endDate, catego
     result_df = pd.DataFrame()
 
     vertical_list = []
-    pytrend = TrendReq(hl='en-GB')
+    pytrend = TrendReq(hl='en-GB', timeout=(10,25))
 
     if(getDateByN(startDate, 90) >= endDate ):
         # this means we can get all the google trend index results by using only one time request
               
         pytrend.build_payload(kw_list= wordList, cat= category, timeframe= '{0} {1}'.format(startDate, endDate), geo= "GB")
         # pytrend.build_payload(kw_list= wordList, cat= 0, timeframe= 'all', geo= "GB")
-
+        alvinSleep(5)
         data = pytrend.interest_over_time()
+
         if not data.empty:
             data = data.drop(labels = ['isPartial'], axis = "columns")
             vertical_list.append(data)
@@ -131,6 +134,7 @@ def getGoogleTrends_multiple_daily_vertical(wordList, startDate, endDate, catego
         while(1):
             if(getDateByN(dstart, 90) > endDate): 
                 pytrend.build_payload(kw_list= wordList, cat= category, timeframe= '{0} {1}'.format(dstart, endDate), geo= "GB")
+                alvinSleep(5)
                 data = pytrend.interest_over_time()
                 if not data.empty:
                     data = data.drop(labels = ['isPartial'], axis = "columns")
@@ -139,14 +143,13 @@ def getGoogleTrends_multiple_daily_vertical(wordList, startDate, endDate, catego
             else:                                                
                 dend = getDateByN(dstart, 90)
                 pytrend.build_payload(kw_list= wordList, cat= category, timeframe= '{0} {1}'.format(dstart, dend), geo= "GB")
-
+                alvinSleep(5)
                 data = pytrend.interest_over_time()
+                
                 if not data.empty:
                     data = data.drop(labels = ['isPartial'], axis = "columns")
                     vertical_list.append(data)
                 dstart = getDateByN(dstart, 90)
-
-            # alvinSleep(10)
             
 
             
@@ -244,7 +247,7 @@ def getGoogleTrendsByMultipleWordsDaily(kwDict, startDate, endDate, outputCsvPat
                 kw_start = kw_start + 3
 
             # sleep for five seconds incase of block from google anti-crawling
-            # alvinSleep(10)
+            alvinSleep(5)
         
         # get the number of horizonal blocks returned
         n_horizonal_blks = len(horizonal_list)

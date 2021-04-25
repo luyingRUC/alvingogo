@@ -156,3 +156,30 @@ def geneDays(year):
             _date = _date + datetime.timedelta(days=1)
 
     return(result)
+
+
+
+def unifyDateFormat(input_date_string): 
+    if(isinstance(input_date_string, str) == False):
+        # first check whether input is a string, sometimes the input is nonetype, then should return direclty
+        return
+    else: 
+        if(len(input_date_string) > 0):
+            result = input_date_string
+            if("/" in input_date_string):
+                if(len(input_date_string.strip()) >11):
+                    _date = datetime.datetime.strptime(input_date_string, '%m/%d/%Y %H:%M')
+                    result =  _date.strftime("%Y-%m-%d")
+                else: 
+                    _date = datetime.datetime.strptime(input_date_string, '%m/%d/%Y')
+                    result =  _date.strftime("%Y-%m-%d")
+            elif("-" in input_date_string): 
+                if(len(input_date_string.strip()) >11):
+                    _date = datetime.datetime.strptime(input_date_string, '%Y-%m-%d %H:%M:%S')
+                    result =  _date.strftime("%Y-%m-%d")
+                else:
+                    _date = datetime.datetime.strptime(input_date_string, '%Y-%m-%d')
+                    result = _date.strftime("%Y-%m-%d")
+        else: 
+            result = ""
+        return result

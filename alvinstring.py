@@ -1,4 +1,6 @@
 from pattern.text.en import singularize
+import numpy as np 
+import math
 
 
 #  定义统计字符串的方法
@@ -22,12 +24,14 @@ def calcu_sub_str_num(mom_str, sun_str):
 def getText(inputstring):
     # This function transfer a inputstring to "" if it is "None"
     # Because select results from mysql, there are always results like "None" when the target column is empty
-
-    if (inputstring == None): 
+    if(isinstance(inputstring, str)):
+        if(inputstring == "none" or inputstring == "nan"): return ""
+        else: return inputstring
+    elif (inputstring == None ):
         return ""
-    else:
-        return inputstring
-
+    elif(isinstance(inputstring, float)):
+        if(math.isnan(inputstring)): return ""
+        else: return str(inputstring)
 
 def getLem(_word, _type):
     # to get the original format of a word, say: drugs --> drug
@@ -51,3 +55,19 @@ def get_lcase(inputstring):
     result = inputstring.strip().lower()
 
     return result
+
+def remove_html_tags(text):
+    """Remove html tags from a string"""
+    import re
+    clean = re.compile('<.*?>')
+    return re.sub(clean, '', text)
+
+def hasNumbers(inputString):
+    # This function judge whether one string contains any numberic characters
+    # return False if nothing
+    # return true if at least one found
+    return any(char.isdigit() for char in inputString)
+
+def isNumbers(inputString): 
+    # return True only this string is exactly a number
+    return inputString.isdigit()

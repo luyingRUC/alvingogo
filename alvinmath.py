@@ -114,22 +114,25 @@ def smooth1DNparray(x,window_len=11,window='hanning'):
     y=np.convolve(w/w.sum(),s,mode='valid')
     return y
 
+def nthRoot(num, nroot):
+    return num ** (1/nroot)
 
 
-if __name__ == '__main__':
 
-    t=np.linspace(-4,4,100)
-    x=np.sin(t)
-    xn=x+np.random.randn(len(t))*0.1
-    y=smooth1DNparray(xn)
+# if __name__ == '__main__':
+
+#     t=np.linspace(-4,4,100)
+#     x=np.sin(t)
+#     xn=x+np.random.randn(len(t))*0.1
+#     y=smooth1DNparray(xn)
 
 
-    plt.figure(figsize=(14,6))
-    plt.plot(xn,linewidth = .3)
-    plt.plot(y,linewidth = .3)
-    plt.legend(["before", "after"])
-    plt.show()
+#     plt.figure(figsize=(14,6))
+#     plt.plot(xn,linewidth = .3)
+#     plt.plot(y,linewidth = .3)
+#     plt.legend(["before", "after"])
+#     plt.show()
 
-    # pass
+#     # pass
 
 
