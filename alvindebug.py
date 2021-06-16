@@ -4,7 +4,7 @@ def setDebugDirt(directory):
     dir_old = os.getcwd()
     try:
         os.chdir(directory)
-        print("Debug path successfully changed from {} to {}".format(dir_old, directory))
+        print("Debug path successfully changed to {}".format(directory))
     except Exception as e:
         print("Debug directory changing failed...")
         print(e)

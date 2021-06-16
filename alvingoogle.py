@@ -35,10 +35,10 @@ def getGoogleKeywords(kwlist):
 
     # print(EXACT_KEYWORDS)
 
-    print("the drugname-searchedKyword dictionary is: ")
-    print(result)
+    # print("the drugname-searchedKyword dictionary is: ")
+    # print(result)
 
-    return EXACT_KEYWORDS, result
+    return df_CODES, result
 
 
 def getGoogleTrendsByKeywordsDaily(keywords, startDate, endDate, outputCsvPath,  mode = "csv"):
@@ -219,7 +219,6 @@ def getGoogleTrendsByMultipleWordsDaily(kwDict, startDate, endDate, outputCsvPat
     # this is the keywords that are input to google api, some are original words, some are google-format code       
         # please see function `getGoogleKeywords` for details  
     wordList = [kw for kw in kwDict.keys()]
-
 
     if(len(wordList) <= 3):
         # if only have at most 3 keywords, then only use the vertical merging is enough
