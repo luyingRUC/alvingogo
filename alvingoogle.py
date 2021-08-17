@@ -127,6 +127,7 @@ def getGoogleTrends_multiple_daily_vertical(wordList, startDate, endDate, catego
         if not data.empty:
             data = data.drop(labels = ['isPartial'], axis = "columns")
             vertical_list.append(data)
+        else: print("vertical unit = None")
 
     else: 
         # this means we are trying to get data from a time period longer than 3 months 
