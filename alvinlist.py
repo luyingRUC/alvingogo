@@ -11,3 +11,9 @@ def getMeanList(inputList):
         return 1.0
     else: 
         return float(sum(list1) / len(list1))
+
+
+def unionList(lst1, lst2):
+    # get U() of two list
+    final_list = list(set(lst1) | set(lst2))
+    return final_list

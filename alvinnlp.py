@@ -9,12 +9,10 @@ from nltk.corpus import wordnet
 from nltk.sentiment.vader import SentimentIntensityAnalyzer as SIA
 from nltk import pos_tag
 from stop_words import get_stop_words
-get_stop_words("en").remove("and")
+if("and" in get_stop_words("en")):    
+    get_stop_words("en").remove("and")
 
 import re
-
-
-
 
 def generateCleanText(intputText, outputType):
     # This function cleans the intput string and return a cleaned string / list of cleaned words
@@ -24,17 +22,14 @@ def generateCleanText(intputText, outputType):
     '''
 
     # Remove punctuations
-    text = re.sub('[^a-zA-Z]', ' ', intputText)
+    text = re.sub('[^a-zA-Z+]', ' ', intputText)
+
 
     # remove tags
     text = re.sub("&lt;/?.*?&gt;", " &lt;&gt; ", text)
 
     # remove special characters and digits
     text = re.sub("(\\d|\\W)+", " ", text)
-
-    # Create p_stemmer of class PorterStemmer
-    p_stemmer = PorterStemmer()
-    text = text.lower()
 
     # clean and tokenize document string
     tokenizer = RegexpTokenizer(r'\w+')
@@ -52,23 +47,26 @@ def generateCleanText(intputText, outputType):
     # remove stop words from tokens
     # create English stop words list
     en_stop = get_stop_words('en')
-    stopped_tokens = [i for i in tokens if not i in en_stop]
+    tokens = [i for i in tokens if not i in en_stop]
 
-    # # stem tokens
-    # stemmed_tokens = [p_stemmer.stem(i) for i in stopped_tokens]
 
-    # Lemmatization
-    lemmalist = []
-    lemmatizer = WordNetLemmatizer()
-    for word in stopped_tokens:
-        lemmalist.append(lemmatizer.lemmatize(word))
+    # stem tokens
+    p_stemmer = PorterStemmer()
+    stemmed_tokens = [p_stemmer.stem(i) for i in tokens]
+
+
+    # # Lemmatization
+    # lemmalist = []
+    # lemmatizer = WordNetLemmatizer()
+    # for word in tokens:
+    #     lemmalist.append(lemmatizer.lemmatize(word))
 
     # multiples : take all the single characters out of list
     multiples = []
-    for lemma in lemmalist:
+    for word in stemmed_tokens:
         # for single character, take them off:
-        if(len(lemma) > 1):
-            multiples.append(lemma)
+        if(len(word) > 1):
+            multiples.append(word)
 
     if(outputType == "list"):
         return multiples
@@ -87,7 +85,7 @@ def getLastWordStemmed(string, outputType):
     text = string.lower()
 
     # clean and tokenize document string
-    tokens = regexp_tokenize(string, r'\S+')
+    tokens = regexp_tokenize(text, r'\S+')
     # tokens = tokenizer.tokenize(text)
 
     # remove stop words from tokens
@@ -219,3 +217,66 @@ def getAllLemmedLastStemmed(string, outputType):
     else: 
         print("the output type is invalid, please try again")
         return None
+
+
+
+def getCleanString_disco(intputText):
+    # This function cleans the intput string and return a cleaned string / list of cleaned words
+    ''' outputType = 
+        1. list: return a list of clean words : like [Apple, has, power, compelling, to, Microsoft]
+        2. string: return a string of clean words, each of which is joint by " ", like "Apple has power compelling to Microsoft"
+    '''
+
+    
+
+    # replace all charaters except: letters, digit numbers, any of {+.-/}
+    text = re.sub('[^a-zA-Z0-9+/.-]', ' ', intputText)
+    text = text.lower()
+
+    # remove html tags
+    # text = re.sub("&lt;/?.*?&gt;", " &lt;&gt; ", text)
+    cleanr = re.compile('<.*?>')
+    text = re.sub(cleanr, '', text)
+
+    # clean and tokenize document string
+    tokenizer = RegexpTokenizer(r'[\w+/-]+')
+    tokens = tokenizer.tokenize(text)
+
+    # filter the POS tags, if the token is not a noun or adj, chop it out
+    # ok_tags = ['JJ', 'JJR', 'JJS','NN', 'NNS','NNP','NNPS','FW']
+    # ok_tags = ['NN', 'NNS','NNP','NNPS','FW', 'VB', 'VBD', 'VBG', 'VBN', 'VBP', 'VBZ']
+    # word_tuples = pos_tag(tokens)
+    # tokens2 = []
+    # for _tuple in word_tuples:
+    #     if _tuple[1] in ok_tags:
+    #         tokens2.append(_tuple[0])
+
+    # remove stop words from tokens
+    # create English stop words list
+    en_stop = get_stop_words('en')
+    tokens = [i for i in tokens if not i in en_stop]
+
+    # stem tokens
+    p_stemmer = PorterStemmer()
+    tokens_coded = [p_stemmer.stem(i) for i in tokens]
+
+
+    # # Lemmatization
+    # tokens_coded = []
+    # lemmatizer = WordNetLemmatizer()
+    # for word in tokens:
+    #     tokens_coded.append(lemmatizer.lemmatize(word))
+
+    # delete all single characters
+    multiples = []
+    for word in tokens_coded:
+        # for single character, take them off:
+        if(len(word) > 1):
+            multiples.append(word)
+
+
+    multiples = " ".join(multiples)
+    return multiples
+
+# sent = "runs running, programs are ASP3.50, c++"
+# print(getCleanString_disco(sent, "string"))
