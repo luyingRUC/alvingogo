@@ -118,6 +118,20 @@ def nthRoot(num, nroot):
     return num ** (1/nroot)
 
 
+def massUnitToMg(mass, unit):
+    # transfer mass into mg
+    mass = float(mass)
+    result = mass
+    if (unit == "kg"):
+        result = result * 1000 * 1000
+    elif(unit == "g"):
+        result = result * 1000
+    else: 
+        pass
+    return result
+
+
+
 
 # if __name__ == '__main__':
 
