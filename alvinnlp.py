@@ -1,4 +1,7 @@
+from numpy import average
 import nltk
+from nltk.corpus.reader.reviews import ReviewsCorpusReader
+from nltk.featstruct import retract_bindings
 nltk.download('wordnet')
 nltk.download('averaged_perceptron_tagger')
 from nltk.tokenize import word_tokenize
@@ -14,6 +17,7 @@ if("and" in get_stop_words("en")):
     get_stop_words("en").remove("and")
 
 import re
+import textdistance as td
 
 def generateCleanText(intputText, outputType):
     # This function cleans the intput string and return a cleaned string / list of cleaned words
@@ -219,16 +223,14 @@ def getAllLemmedLastStemmed(string, outputType):
         return None
 
 
-
-def getCleanString_disco(intputText):
+def getCleanString_disco3(intputText):
     # This function cleans the intput string and return a cleaned string / list of cleaned words
     ''' outputType = 
         1. list: return a list of clean words : like [Apple, has, power, compelling, to, Microsoft]
         2. string: return a string of clean words, each of which is joint by " ", like "Apple has power compelling to Microsoft"
-    '''   
-
+    '''
     # replace all charaters except: letters, digit numbers, any of {+.-/}
-    text = re.sub('[^a-zA-Z0-9+/.-]', ' ', intputText)
+    text = re.sub('[\s\\(\\)]', ' ', intputText)
     text = text.lower()
 
     # remove html tags
@@ -237,7 +239,7 @@ def getCleanString_disco(intputText):
     text = re.sub(cleanr, '', text)
 
     # clean and tokenize document string
-    tokenizer = RegexpTokenizer(r'[^,\s]+')
+    tokenizer = RegexpTokenizer(r'[^/,;\s]+')
     tokens = tokenizer.tokenize(text)
 
     # remove stop words from tokens
@@ -248,20 +250,19 @@ def getCleanString_disco(intputText):
     word_tuples = pos_tag(tokens)
     tokens2 = []
     for _tuple in word_tuples:
-        # if _tuple[1].startswith(("N", "J", "V")):
-        if _tuple[1].startswith(("N")):
+        if _tuple[1].startswith(("N", "V")):
+        # if _tuple[1].startswith(("N")):
             tokens2.append(_tuple[0])
 
-    # # stem tokens
-    # p_stemmer = PorterStemmer()
-    # tokens_coded = [p_stemmer.stem(i) for i in tokens2]
+    # stem tokens
+    p_stemmer = PorterStemmer()
+    tokens_coded = [p_stemmer.stem(i) for i in tokens2]
 
-
-    # Lemmatization
-    tokens_coded = []
-    lemmatizer = WordNetLemmatizer()
-    for word in tokens:
-        tokens_coded.append(lemmatizer.lemmatize(word))
+    # # Lemmatization
+    # tokens_coded = []
+    # lemmatizer = WordNetLemmatizer()
+    # for word in tokens2:
+    #     tokens_coded.append(lemmatizer.lemmatize(word))
 
     # delete all single characters
     multiples = []
@@ -273,3 +274,52 @@ def getCleanString_disco(intputText):
 
     multiples = " ".join(multiples)
     return multiples
+
+def calTextSimilarity(str1, str2, similarity_mode): 
+    # calculate average string similarity score based on several similarity score measurement 
+    
+    rslt_similarity = None
+    lst = []
+
+    if(similarity_mode == "all"):
+        # edit based : exact match -> 0.0, bigger means less similar 
+        lst.append(1/(td.hamming(str1, str2) + 1))
+        lst.append(1/(td.levenshtein(str1, str2) + 1))
+        lst.append(1/(td.jaro_winkler(str1, str2) + 1))
+
+        # token based: exact match -> 1.0, smaller means less similar
+        lst.append(1/(td.jaccard(str1, str2) + 1))
+        lst.append(1/(td.sorensen(str1, str2) + 1))
+
+        # sequence based: exact match -> 1.0, smaller means less similar 
+        lst.append(1/(td.ratcliff_obershelp(str1, str2) + 1))
+    elif(similarity_mode == "edit"):
+        lst.append(1/(td.hamming(str1, str2) + 1))
+        lst.append(1/(td.levenshtein(str1, str2) + 1))
+        lst.append(1/(td.jaro_winkler(str1, str2) + 1))
+    elif(similarity_mode == "token"):
+        lst.append(1/(td.jaccard(str1, str2) + 1))
+        lst.append(1/(td.sorensen(str1, str2) + 1))
+    elif(similarity_mode == "sequence"):
+        lst.append(1/(td.ratcliff_obershelp(str1, str2) + 1))
+    else:
+        print("text similarity type is invalid, return None ")
+        return rslt_similarity
+
+    rslt_similarity = sum(lst)/len(lst)
+    return rslt_similarity
+
+
+def getMatchedString(target_string, string_list, similarity_mode):
+    # return string that best matches with target string from a string list
+    rslt_similarityscore = 0.0
+    rslt_matched_string = ""
+    for _s in string_list: 
+        _score = calTextSimilarity(target_string, _s, similarity_mode)
+        if _score > rslt_similarityscore: 
+            rslt_similarityscore = _score
+            rslt_matched_string = _s
+        else: 
+            pass
+
+    return rslt_matched_string, rslt_similarityscore

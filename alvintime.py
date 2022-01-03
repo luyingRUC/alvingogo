@@ -185,8 +185,13 @@ def unifyDateFormat(input_date_string):
 
 
 def getWeekNum(year):
-    result = datetime.date(year, 12, 31).isocalendar()[1]
+    result = datetime.date(year, 12, 28).isocalendar()[1]
     return result
+
+def getBiweekNum(year):
+    weeknum = datetime.date(year, 12, 28).isocalendar()[1]
+    return round(weeknum/2)
+
 
 def geneYearWeekList(yearweek_min, yearweek_max):
     # Generate all "year_week" format string within the given scope
@@ -210,6 +215,43 @@ def geneYearWeekList(yearweek_min, yearweek_max):
                         result.append(str(y)+ "-" +str(i) )            
             elif(y < int(year2) and y > int(year1)):
                 for i in range(1,getWeekNum(y) + 1, 1):
+                    if (i <10):
+                        result.append(str(y)+ "-0" +str(i) )
+                    else:
+                        result.append(str(y)+ "-" +str(i) )
+            elif(y == int(year2)):
+                for i in range(1, int(week2) + 1, 1):
+                    if (i <10):
+                        result.append(str(y)+ "-0" +str(i) )
+                    else:
+                        result.append(str(y)+ "-" +str(i) )            
+            y = y+1
+    return result 
+
+
+
+def geneYearBiWeekList(yearbiweek_min, yearbiweek_max):
+    # Generate all "year_biweek" format string within the given scope
+    result = []
+    year1, week1 = yearbiweek_min.split("-")[0], yearbiweek_min.split("-")[1]
+    year2, week2 = yearbiweek_max.split("-")[0], yearbiweek_max.split("-")[1]
+    if(year1 == year2):
+        for i in range(int(week1), int(week2) + 1, 1):
+            if (i <10):
+                result.append(year1+ "-0" +str(i) )
+            else:
+                result.append(year1+ "-" +str(i) )     
+    else: 
+        y = int(year1)
+        while(y<= int(year2)):
+            if( y == int(year1)):
+                for i in range(int(week1), getBiweekNum(int(year1)) + 1, 1):
+                    if (i <10):
+                        result.append(str(y)+ "-0" +str(i) )
+                    else:
+                        result.append(str(y)+ "-" +str(i) )            
+            elif(y < int(year2) and y > int(year1)):
+                for i in range(1,getBiweekNum(y) + 1, 1):
                     if (i <10):
                         result.append(str(y)+ "-0" +str(i) )
                     else:
